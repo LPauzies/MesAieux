@@ -15,9 +15,6 @@ ING1-GL1-PROJET
 ## Description :
 Création d'une application web permettant la création d'arbre généalogique.
 
-## Lien de visualisation du site en ligne
-http://mesaieux.dracarys.xyz
-
 ## Version des outils et librairie utilisé
 - Python 3
 - Django 1.10.2
