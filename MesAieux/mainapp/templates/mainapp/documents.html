@@ -1,0 +1,59 @@
+{% extends 'header.html' %}
+
+{% block title %}
+    Mes documents
+{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        {% for file in files %}
+            <div class="ui clearing segment">
+                <div class="ui grid">
+                    <div class="fifteen wide column">
+                        <p>
+                            <b>Description :</b>
+                            {{file.commentaire|linebreaks}}
+                        </p>
+                    </div>
+                    <div class="one wide column">
+                        <p>
+                            <div class="ui rating" data-max-rating="1" {% if file.validation %} data-rating="1" data-tooltip="Document validé" {% else %} data-tooltip="Document en attente de validation" {% endif %} data-position="bottom right" ></div>
+                        </p>
+                    </div>
+                    <div class="thirteen wide column">
+                        {% if file.tag %}
+                            <div class="ui tag labels">
+                                {% for tag in file.split_tag %}
+                                  {% if tag %}
+                                    <a class="ui label">{{tag}}</a>
+                                  {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif%}
+                        {% if file.comHistorien %}
+                            <p>
+                                <b>Commentaires de nos historiens :</b>
+                                {{file.comHistorien}}
+                            </p>
+                        {% endif %}
+                        {% if file.dateHistorien %}
+                            <p>
+                                <b>Date :</b>
+                                {{file.dateHistorien}}
+                            </p>
+                        {% endif %}
+                    </div>
+                    <div class="three wide column">
+                        <a  href="/media/{{file.fichier}}" target="_blank"><div class="ui right floated orange button">Voir le document</div></a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block js %}
+    $('.ui.rating')
+        .rating('disable')
+    ;
+{% endblock %}

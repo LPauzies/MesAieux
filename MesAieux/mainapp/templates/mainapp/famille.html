@@ -1,0 +1,156 @@
+{% extends 'header.html' %}
+
+{% block stylesheet %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/famille.css' %}" />
+{% endblock %}
+
+{% block title%}Famille {{nomFamille}} {% endblock %}
+
+{% block content %}
+
+    <div id="global" class="ui container center">
+        <h3 class="ui horizontal divider header">
+            <h2 class="ui horizontal divider header">
+                <div class="ui" id="nom" data-position="right center">
+                    {{nomFamille}}
+                </div>
+            </h2>
+        </h3>
+
+        <div id="graph"></div>
+        <div class="ui container center" id="ajoutlien">
+            {% if request.user.individu.famille.id == nomFamilleId %}
+                <form action="{% url 'ajoutLienParente' %}" method="post" >
+                    {% csrf_token %}
+                    <div class="ui form">
+                        <div class="three fields">
+                            <div class="field">
+                                <div class="ui fluid search selection dropdown" id="individuFamille1_dropdown">
+                                    <input name="ind1" type="hidden">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text">Sélectionner un individu</div>
+                                    <div class="menu">
+                                        {% for individu in individus %}
+                                            {% if individu.famille.id == nomFamilleId %}
+                                                <div class="item" data-value="{{individu.id}}" >{{individu.user.first_name}}</div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="relation">EST</span>
+                            <div class="field">
+                                <div class="ui fluid search selection dropdown" id="lien_dropdown">
+                                    <input name="lien" type="hidden">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text">Sélectionner un individu</div>
+                                    <div class="menu">
+                                        {% for lien in liens %}
+                                            <div class="item" data-value="{{lien.id}}" >{{lien.nom}}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="relation">DE</span>
+                            <div class="field">
+                                <div class="ui fluid search selection dropdown" id="individuFamille2_dropdown">
+                                    <input name="ind2" type="hidden">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text">Sélectionner un individu</div>
+                                    <div class="menu">
+                                        {% for individu in individus %}
+                                            {% if individu.famille.id == nomFamilleId %}
+                                                <div class="item" data-value="{{individu.id}}" >{{individu.user.first_name}}</div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        <button class="ui button orange" type="submit">Ajouter</button>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="ui modal" id="modalArbreProfile">
+      <i class="close icon"></i>
+      <div class="header">
+        <p id="profil"> </p>
+      </div>
+      <div class="image content">
+        <div class="ui medium image">
+          <img src="" id="photoModal">
+        </div>
+        <div class="description">
+          <div class="ui header"> Profil :</div>
+          <div id="genre" class="ui small header"> </div>
+          <div id="dateNais" class="ui small header">  </p> </div>
+          <div id="dateDece" class="ui small header"> </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.rawgit.com/ErikGartner/dTree/1.3.2/dist/dTree.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+{% endblock %}
+
+
+<script>
+{% block js %}
+
+    $('#individuFamille1_dropdown').dropdown();
+    $('#individuFamille2_dropdown').dropdown();
+    $('#lien_dropdown').dropdown();
+
+    $('.message .close').on('click', function() {
+      $(this)
+          .closest('.message')
+          .transition('fade')
+          ;
+    });
+
+    var data = "{{arbre}}"
+    var dataJson = JSON.parse(data.replace(/&quot;/g,'"'));
+
+
+dTree.init(dataJson, {
+  target: "#graph",
+  debug: false,
+  height: 600,
+  width: 1120,
+  callbacks: {
+    nodeClick: function(name, extra) {
+      $("#photoModal").attr('src', '/media/'+extra.photo);
+      $("#profil").text(name);
+      $("#genre").text("Genre : "+extra.genre);
+      $("#dateNais").text("Date de naissance : "+extra.dateNais);
+      if (extra.dateDece != '') {
+        $("#dateDece").text("Date de décès : "+extra.dateDece);
+      }
+      $('#modalArbreProfile')
+        .modal('show')
+      ;
+      }
+    },
+    margin: {
+       top: 0,
+       right: 0,
+       bottom: 0,
+       left: 0
+     },
+     nodeWidth: 100,
+     styles: {
+       node: 'node',
+       linage: 'linage',
+       marriage: 'marriage',
+       text: 'nodeText'
+     }
+  });
+
+{% endblock %}
+</script>

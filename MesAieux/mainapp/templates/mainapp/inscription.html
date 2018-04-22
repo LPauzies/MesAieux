@@ -1,0 +1,407 @@
+{% extends 'header.html' %}
+
+
+{% block stylesheet %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/flag.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/connexion_inscription.css' %}" />
+{% endblock %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block content %}
+    <body>
+        <div class="ui container">
+            <div class="ui attached message">
+                <div class="header">
+                    Bienvenue sur <i>Mes Aïeux</i> !
+                </div>
+                <p>Remplissez les champs ci-dessous si vous souhaitez vous inscrire :</p>
+            </div>
+            <form class="ui form attached fluid segment" action="{% url 'inscription' %}" method="post">
+                <h4 class="ui dividing header">Inscription</h4>
+                {% csrf_token %}
+                <!-- Mise en page de tout les champs du formulaire -->
+                {% for field in form %}
+                    {% if field.name == "nom" %}
+                        <!-- Si les champs correspondent aux nom, prénom1, prénom2 ou prénom3 ils seront alignées -->
+                        <div class="four fields">
+                            <div class="field">
+                                <label>{{field.label}}*</label>
+                                {{field}}
+                            </div>
+                    {% endif %}
+                    {% if field.name == "prenom1" or field.name == "prenom2" %}
+                            <div class="field">
+                                <label>{{field.label}}{% if field.name == "prenom1"%}*{% endif %}</label>
+                                {{field}}
+                            </div>
+                    {% endif %}
+                    {% if field.name == "prenom3" %}
+                            <div class="field">
+                                <label>{{field.label}}</label>
+                                {{field}}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if field.name == "email" %}
+                        <div class="three fields">
+                            <div class="field">
+                                <label>{{field.label}}*</label>
+                                {{field}}
+                            </div>
+                    {% endif %}
+                    {% if field.name == "password" %}
+                            <div class="field">
+                                <label>Mot de passe*</label>
+                                {{field}}
+                            </div>
+
+                    {% endif %}
+                    {% if field.name == "password_conf" %}
+                            <div class="field">
+                                <label>Confirmez le password*</label>
+                                {{field}}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if field.name == "occupation" or field.name == "telephone" %}
+                        <!-- Si le champs correspond à l'email, au password les champs seront alignées -->
+                        <div class="field">
+                            <label>{{field.label}}</label>
+                            {{field}}
+                        </div>
+                    {% endif %}
+                    {% if field.name == "genre" %}
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Genre</label>
+                                <div class="ui selection dropdown">
+                                    <input name="genre" type="hidden">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text">Genre</div>
+                                    <div class="menu">
+                                        <div class="item">Homme</div>
+                                        <div class="item">Femme</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if field.name == "nais" %}
+                        <div class="two fields">
+                            <div class="field">
+                                <label>{{field.label}}*</label>
+                                {{field}}
+                            </div>
+                    {% endif %}
+                    {% if field.name == "mariage" %}
+                            <div class="field">
+                                <label>{{field.label}}</label>
+                                {{field}}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if field.name == "nationalite" %}
+                        <div class="field">
+                            <label>{{field.label}}*</label>
+                            <div class="ui fluid search selection dropdown">
+                                <input value="af" name="nationalite" type="hidden">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Sélectionner un pays</div>
+                                <div class="menu">
+                                    <div class="item" ><i class="af flag"></i>Afghanistan</div>
+                                    <div class="item" ><i class="ax flag"></i>Aland Islands</div>
+                                    <div class="item" ><i class="al flag"></i>Albania</div>
+                                    <div class="item" ><i class="dz flag"></i>Algeria</div>
+                                    <div class="item" ><i class="as flag"></i>American Samoa</div>
+                                    <div class="item" ><i class="ad flag"></i>Andorra</div>
+                                    <div class="item" ><i class="ao flag"></i>Angola</div>
+                                    <div class="item" ><i class="ai flag"></i>Anguilla</div>
+                                    <div class="item" ><i class="ag flag"></i>Antigua</div>
+                                    <div class="item" ><i class="ar flag"></i>Argentina</div>
+                                    <div class="item" ><i class="am flag"></i>Armenia</div>
+                                    <div class="item" ><i class="aw flag"></i>Aruba</div>
+                                    <div class="item" ><i class="au flag"></i>Australia</div>
+                                    <div class="item" ><i class="at flag"></i>Austria</div>
+                                    <div class="item" ><i class="az flag"></i>Azerbaijan</div>
+                                    <div class="item" ><i class="bs flag"></i>Bahamas</div>
+                                    <div class="item" ><i class="bh flag"></i>Bahrain</div>
+                                    <div class="item" ><i class="bd flag"></i>Bangladesh</div>
+                                    <div class="item" ><i class="bb flag"></i>Barbados</div>
+                                    <div class="item" ><i class="by flag"></i>Belarus</div>
+                                    <div class="item" ><i class="be flag"></i>Belgium</div>
+                                    <div class="item" ><i class="bz flag"></i>Belize</div>
+                                    <div class="item" ><i class="bj flag"></i>Benin</div>
+                                    <div class="item" ><i class="bm flag"></i>Bermuda</div>
+                                    <div class="item" ><i class="bt flag"></i>Bhutan</div>
+                                    <div class="item" ><i class="bo flag"></i>Bolivia</div>
+                                    <div class="item" ><i class="ba flag"></i>Bosnia</div>
+                                    <div class="item" ><i class="bw flag"></i>Botswana</div>
+                                    <div class="item" ><i class="bv flag"></i>Bouvet Island</div>
+                                    <div class="item" ><i class="br flag"></i>Brazil</div>
+                                    <div class="item" ><i class="vg flag"></i>British Virgin Islands</div>
+                                    <div class="item" ><i class="bn flag"></i>Brunei</div>
+                                    <div class="item" ><i class="bg flag"></i>Bulgaria</div>
+                                    <div class="item" ><i class="bf flag"></i>Burkina Faso</div>
+                                    <div class="item" ><i class="ar flag"></i>Burma</div>
+                                    <div class="item" ><i class="bi flag"></i>Burundi</div>
+                                    <div class="item" ><i class="tc flag"></i>Caicos Islands</div>
+                                    <div class="item" ><i class="kh flag"></i>Cambodia</div>
+                                    <div class="item" ><i class="cm flag"></i>Cameroon</div>
+                                    <div class="item" ><i class="ca flag"></i>Canada</div>
+                                    <div class="item" ><i class="cv flag"></i>Cape Verde</div>
+                                    <div class="item" ><i class="ky flag"></i>Cayman Islands</div>
+                                    <div class="item" ><i class="cf flag"></i>Central African Republic</div>
+                                    <div class="item" ><i class="td flag"></i>Chad</div>
+                                    <div class="item" ><i class="cl flag"></i>Chile</div>
+                                    <div class="item" ><i class="cn flag"></i>China</div>
+                                    <div class="item" ><i class="cx flag"></i>Christmas Island</div>
+                                    <div class="item" ><i class="cc flag"></i>Cocos Islands</div>
+                                    <div class="item" ><i class="co flag"></i>Colombia</div>
+                                    <div class="item" ><i class="km flag"></i>Comoros</div>
+                                    <div class="item" ><i class="cg flag"></i>Congo Brazzaville</div>
+                                    <div class="item" ><i class="cd flag"></i>Congo</div>
+                                    <div class="item" ><i class="ck flag"></i>Cook Islands</div>
+                                    <div class="item" ><i class="cr flag"></i>Costa Rica</div>
+                                    <div class="item" ><i class="ci flag"></i>Cote Divoire</div>
+                                    <div class="item" ><i class="hr flag"></i>Croatia</div>
+                                    <div class="item" ><i class="cu flag"></i>Cuba</div>
+                                    <div class="item" ><i class="cy flag"></i>Cyprus</div>
+                                    <div class="item" ><i class="cz flag"></i>Czech Republic</div>
+                                    <div class="item" ><i class="dk flag"></i>Denmark</div>
+                                    <div class="item" ><i class="dj flag"></i>Djibouti</div>
+                                    <div class="item" ><i class="dm flag"></i>Dominica</div>
+                                    <div class="item" ><i class="do flag"></i>Dominican Republic</div>
+                                    <div class="item" ><i class="ec flag"></i>Ecuador</div>
+                                    <div class="item" ><i class="eg flag"></i>Egypt</div>
+                                    <div class="item" ><i class="sv flag"></i>El Salvador</div>
+                                    <div class="item" ><i class="gb flag"></i>England</div>
+                                    <div class="item" ><i class="gq flag"></i>Equatorial Guinea</div>
+                                    <div class="item" ><i class="er flag"></i>Eritrea</div>
+                                    <div class="item" ><i class="ee flag"></i>Estonia</div>
+                                    <div class="item" ><i class="et flag"></i>Ethiopia</div>
+                                    <div class="item" ><i class="eu flag"></i>European Union</div>
+                                    <div class="item" ><i class="fk flag"></i>Falkland Islands</div>
+                                    <div class="item" ><i class="fo flag"></i>Faroe Islands</div>
+                                    <div class="item" ><i class="fj flag"></i>Fiji</div>
+                                    <div class="item" ><i class="fi flag"></i>Finland</div>
+                                    <div class="item" ><i class="fr flag"></i>France</div>
+                                    <div class="item" ><i class="gf flag"></i>French Guiana</div>
+                                    <div class="item" ><i class="pf flag"></i>French Polynesia</div>
+                                    <div class="item" ><i class="tf flag"></i>French Territories</div>
+                                    <div class="item" ><i class="ga flag"></i>Gabon</div>
+                                    <div class="item" ><i class="gm flag"></i>Gambia</div>
+                                    <div class="item" ><i class="ge flag"></i>Georgia</div>
+                                    <div class="item" ><i class="de flag"></i>Germany</div>
+                                    <div class="item" ><i class="gh flag"></i>Ghana</div>
+                                    <div class="item" ><i class="gi flag"></i>Gibraltar</div>
+                                    <div class="item" ><i class="gr flag"></i>Greece</div>
+                                    <div class="item" ><i class="gl flag"></i>Greenland</div>
+                                    <div class="item" ><i class="gd flag"></i>Grenada</div>
+                                    <div class="item" ><i class="gp flag"></i>Guadeloupe</div>
+                                    <div class="item" ><i class="gu flag"></i>Guam</div>
+                                    <div class="item" ><i class="gt flag"></i>Guatemala</div>
+                                    <div class="item" ><i class="gw flag"></i>Guinea-Bissau</div>
+                                    <div class="item" ><i class="gn flag"></i>Guinea</div>
+                                    <div class="item" ><i class="gy flag"></i>Guyana</div>
+                                    <div class="item" ><i class="ht flag"></i>Haiti</div>
+                                    <div class="item" ><i class="hm flag"></i>Heard Island</div>
+                                    <div class="item" ><i class="hn flag"></i>Honduras</div>
+                                    <div class="item" ><i class="hk flag"></i>Hong Kong</div>
+                                    <div class="item" ><i class="hu flag"></i>Hungary</div>
+                                    <div class="item" ><i class="is flag"></i>Iceland</div>
+                                    <div class="item" ><i class="in flag"></i>India</div>
+                                    <div class="item" ><i class="io flag"></i>Indian Ocean Territory</div>
+                                    <div class="item" ><i class="id flag"></i>Indonesia</div>
+                                    <div class="item" ><i class="ir flag"></i>Iran</div>
+                                    <div class="item" ><i class="iq flag"></i>Iraq</div>
+                                    <div class="item" ><i class="ie flag"></i>Ireland</div>
+                                    <div class="item" ><i class="il flag"></i>Israel</div>
+                                    <div class="item" ><i class="id flag"></i>Indonesia</div>
+                                    <div class="item" ><i class="ir flag"></i>Iran</div>
+                                    <div class="item" ><i class="iq flag"></i>Iraq</div>
+                                    <div class="item" ><i class="ie flag"></i>Ireland</div>
+                                    <div class="item" ><i class="il flag"></i>Israel</div>
+                                    <div class="item" ><i class="it flag"></i>Italy</div>
+                                    <div class="item" ><i class="jm flag"></i>Jamaica</div>
+                                    <div class="item" ><i class="jp flag"></i>Japan</div>
+                                    <div class="item" ><i class="jo flag"></i>Jordan</div>
+                                    <div class="item" ><i class="kz flag"></i>Kazakhstan</div>
+                                    <div class="item" ><i class="ke flag"></i>Kenya</div>
+                                    <div class="item" ><i class="ki flag"></i>Kiribati</div>
+                                    <div class="item" ><i class="kw flag"></i>Kuwait</div>
+                                    <div class="item" ><i class="kg flag"></i>Kyrgyzstan</div>
+                                    <div class="item" ><i class="la flag"></i>Laos</div>
+                                    <div class="item" ><i class="lv flag"></i>Latvia</div>
+                                    <div class="item" ><i class="lb flag"></i>Lebanon</div>
+                                    <div class="item" ><i class="ls flag"></i>Lesotho</div>
+                                    <div class="item" ><i class="lr flag"></i>Liberia</div>
+                                    <div class="item" ><i class="ly flag"></i>Libya</div>
+                                    <div class="item" ><i class="li flag"></i>Liechtenstein</div>
+                                    <div class="item" ><i class="lt flag"></i>Lithuania</div>
+                                    <div class="item" ><i class="lu flag"></i>Luxembourg</div>
+                                    <div class="item" ><i class="mo flag"></i>Macau</div>
+                                    <div class="item" ><i class="mk flag"></i>Macedonia</div>
+                                    <div class="item" ><i class="mg flag"></i>Madagascar</div>
+                                    <div class="item" ><i class="mw flag"></i>Malawi</div>
+                                    <div class="item" ><i class="my flag"></i>Malaysia</div>
+                                    <div class="item" ><i class="mv flag"></i>Maldives</div>
+                                    <div class="item" ><i class="ml flag"></i>Mali</div>
+                                    <div class="item" ><i class="mt flag"></i>Malta</div>
+                                    <div class="item" ><i class="mh flag"></i>Marshall Islands</div>
+                                    <div class="item" ><i class="mq flag"></i>Martinique</div>
+                                    <div class="item" ><i class="mr flag"></i>Mauritania</div>
+                                    <div class="item" ><i class="mu flag"></i>Mauritius</div>
+                                    <div class="item" ><i class="yt flag"></i>Mayotte</div>
+                                    <div class="item" ><i class="mx flag"></i>Mexico</div>
+                                    <div class="item" ><i class="fm flag"></i>Micronesia</div>
+                                    <div class="item" ><i class="md flag"></i>Moldova</div>
+                                    <div class="item" ><i class="mc flag"></i>Monaco</div>
+                                    <div class="item" ><i class="mn flag"></i>Mongolia</div>
+                                    <div class="item" ><i class="me flag"></i>Montenegro</div>
+                                    <div class="item" ><i class="ms flag"></i>Montserrat</div>
+                                    <div class="item" ><i class="ma flag"></i>Morocco</div>
+                                    <div class="item" ><i class="mz flag"></i>Mozambique</div>
+                                    <div class="item" ><i class="na flag"></i>Namibia</div>
+                                    <div class="item" ><i class="nr flag"></i>Nauru</div>
+                                    <div class="item" ><i class="np flag"></i>Nepal</div>
+                                    <div class="item" ><i class="an flag"></i>Netherlands Antilles</div>
+                                    <div class="item" ><i class="nl flag"></i>Netherlands</div>
+                                    <div class="item" ><i class="nc flag"></i>New Caledonia</div>
+                                    <div class="item" ><i class="pg flag"></i>New Guinea</div>
+                                    <div class="item" ><i class="nz flag"></i>New Zealand</div>
+                                    <div class="item" ><i class="ni flag"></i>Nicaragua</div>
+                                    <div class="item" ><i class="ne flag"></i>Niger</div>
+                                    <div class="item" ><i class="ng flag"></i>Nigeria</div>
+                                    <div class="item" ><i class="nu flag"></i>Niue</div>
+                                    <div class="item" ><i class="nf flag"></i>Norfolk Island</div>
+                                    <div class="item" ><i class="kp flag"></i>North Korea</div>
+                                    <div class="item" ><i class="mp flag"></i>Northern Mariana Islands</div>
+                                    <div class="item" ><i class="no flag"></i>Norway</div>
+                                    <div class="item" ><i class="om flag"></i>Oman</div>
+                                    <div class="item" ><i class="pk flag"></i>Pakistan</div>
+                                    <div class="item" ><i class="pw flag"></i>Palau</div>
+                                    <div class="item" ><i class="ps flag"></i>Palestine</div>
+                                    <div class="item" ><i class="pa flag"></i>Panama</div>
+                                    <div class="item" ><i class="py flag"></i>Paraguay</div>
+                                    <div class="item" ><i class="pe flag"></i>Peru</div>
+                                    <div class="item" ><i class="ph flag"></i>Philippines</div>
+                                    <div class="item" ><i class="pn flag"></i>Pitcairn Islands</div>
+                                    <div class="item" ><i class="pl flag"></i>Poland</div>
+                                    <div class="item" ><i class="pt flag"></i>Portugal</div>
+                                    <div class="item" ><i class="pr flag"></i>Puerto Rico</div>
+                                    <div class="item" ><i class="qa flag"></i>Qatar</div>
+                                    <div class="item" ><i class="re flag"></i>Reunion</div>
+                                    <div class="item" ><i class="ro flag"></i>Romania</div>
+                                    <div class="item" ><i class="ru flag"></i>Russia</div>
+                                    <div class="item" ><i class="rw flag"></i>Rwanda</div>
+                                    <div class="item" ><i class="sh flag"></i>Saint Helena</div>
+                                    <div class="item" ><i class="kn flag"></i>Saint Kitts and Nevis</div>
+                                    <div class="item" ><i class="lc flag"></i>Saint Lucia</div>
+                                    <div class="item" ><i class="pm flag"></i>Saint Pierre</div>
+                                    <div class="item" ><i class="vc flag"></i>Saint Vincent</div>
+                                    <div class="item" ><i class="ws flag"></i>Samoa</div>
+                                    <div class="item" ><i class="sm flag"></i>San Marino</div>
+                                    <div class="item" ><i class="gs flag"></i>Sandwich Islands</div>
+                                    <div class="item" ><i class="st flag"></i>Sao Tome</div>
+                                    <div class="item" ><i class="sa flag"></i>Saudi Arabia</div>
+                                    <div class="item" ><i class="sn flag"></i>Senegal</div>
+                                    <div class="item" ><i class="cs flag"></i>Serbia</div>
+                                    <div class="item" ><i class="rs flag"></i>Serbia</div>
+                                    <div class="item" ><i class="sc flag"></i>Seychelles</div>
+                                    <div class="item" ><i class="sl flag"></i>Sierra Leone</div>
+                                    <div class="item" ><i class="sg flag"></i>Singapore</div>
+                                    <div class="item" ><i class="sk flag"></i>Slovakia</div>
+                                    <div class="item" ><i class="si flag"></i>Slovenia</div>
+                                    <div class="item" ><i class="sb flag"></i>Solomon Islands</div>
+                                    <div class="item" ><i class="so flag"></i>Somalia</div>
+                                    <div class="item" ><i class="za flag"></i>South Africa</div>
+                                    <div class="item" ><i class="kr flag"></i>South Korea</div>
+                                    <div class="item" ><i class="es flag"></i>Spain</div>
+                                    <div class="item" ><i class="lk flag"></i>Sri Lanka</div>
+                                    <div class="item" ><i class="sd flag"></i>Sudan</div>
+                                    <div class="item" ><i class="sr flag"></i>Suriname</div>
+                                    <div class="item" ><i class="sj flag"></i>Svalbard</div>
+                                    <div class="item" ><i class="sz flag"></i>Swaziland</div>
+                                    <div class="item" ><i class="se flag"></i>Sweden</div>
+                                    <div class="item" ><i class="ch flag"></i>Switzerland</div>
+                                    <div class="item" ><i class="sy flag"></i>Syria</div>
+                                    <div class="item" ><i class="tw flag"></i>Taiwan</div>
+                                    <div class="item" ><i class="tj flag"></i>Tajikistan</div>
+                                    <div class="item" ><i class="tz flag"></i>Tanzania</div>
+                                    <div class="item" ><i class="th flag"></i>Thailand</div>
+                                    <div class="item" ><i class="tl flag"></i>Timorleste</div>
+                                    <div class="item" ><i class="tg flag"></i>Togo</div>
+                                    <div class="item" ><i class="tk flag"></i>Tokelau</div>
+                                    <div class="item" ><i class="to flag"></i>Tonga</div>
+                                    <div class="item" ><i class="tt flag"></i>Trinidad</div>
+                                    <div class="item" ><i class="tn flag"></i>Tunisia</div>
+                                    <div class="item" ><i class="tr flag"></i>Turkey</div>
+                                    <div class="item" ><i class="tm flag"></i>Turkmenistan</div>
+                                    <div class="item" ><i class="tv flag"></i>Tuvalu</div>
+                                    <div class="item" ><i class="ug flag"></i>Uganda</div>
+                                    <div class="item" ><i class="ua flag"></i>Ukraine</div>
+                                    <div class="item" ><i class="ae flag"></i>United Arab Emirates</div>
+                                    <div class="item" ><i class="us flag"></i>United States</div>
+                                    <div class="item" ><i class="uy flag"></i>Uruguay</div>
+                                    <div class="item" ><i class="um flag"></i>Us Minor Islands</div>
+                                    <div class="item" ><i class="vi flag"></i>Us Virgin Islands</div>
+                                    <div class="item" ><i class="uz flag"></i>Uzbekistan</div>
+                                    <div class="item" ><i class="vu flag"></i>Vanuatu</div>
+                                    <div class="item" ><i class="va flag"></i>Vatican City</div>
+                                    <div class="item" ><i class="ve flag"></i>Venezuela</div>
+                                    <div class="item" ><i class="vn flag"></i>Vietnam</div>
+                                    <div class="item" ><i class="wf flag"></i>Wallis and Futuna</div>
+                                    <div class="item" ><i class="eh flag"></i>Western Sahara</div>
+                                    <div class="item" ><i class="ye flag"></i>Yemen</div>
+                                    <div class="item" ><i class="zm flag"></i>Zambia</div>
+                                    <div class="item" ><i class="zw flag"></i>Zimbabwe</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if field.name == "numero" %}
+                            <div class="four fields">
+                                <div class="field">
+                                    <label>{{field.label}}</label>
+                                    {{field}}
+                                </div>
+                        {% endif %}
+                        {% if field.name == "nomrue" or field.name == "ville"%}
+                                <div class="field">
+                                    <label>{{field.label}}</label>
+                                    {{field}}
+                                </div>
+                        {% endif %}
+                        {% if field.name == "code" %}
+                                <div class="field">
+                                    <label>{{field.label}}</label>
+                                    {{field}}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="button-connexion">
+                        <button class="ui orange button button-connexion" type="submit"> Valider </button>
+                    </div>
+                </div>
+            </form>
+            <div class="ui bottom attached message">
+                <div class="ui right floated">
+                    * Champs obligatoire
+                </div>
+                <div class="ui left floated">
+                    <i class="icon help"></i>
+                    Déjà inscrit ? <a href="{% url 'connexion' %}">Se connecter</a>.
+                </div>
+            </div>
+        </div><br>
+    </body>
+{% endblock %}
+
+{% block js %}
+    $(document).ready(function (){
+        $('.ui.dropdown').dropdown();
+    })
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'header.html' %}
+
+{% block title %}
+Ajout de document
+{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        <form id="fileFamille" action="{% url 'ajoutdocuments' %}" method="post" enctype="multipart/form-data">
+            <div class="ui center aligned container">
+                {% csrf_token %}
+                <input type="button" class="ui orange button" id="load_image" value="Choisir un fichier" onclick="document.getElementById('id_image').click();" />
+                <input type="file" name="doc" id="id_image" style="display:none;"/>
+                <p class="black file_location" id="location_pathfile"></p>
+                <p class="grey file_size">La taille maximale allouée est de 5 MB</p>
+            </div>
+            <div class="ui equal width form">
+                <div class="fields">
+                    <div class="field">
+                        <label>Description *</label>
+                        <textarea name="commentaire"></textarea>
+                    </div>
+                </div>
+                <div class="fields">
+                    <div class="field">
+                        <label>Tag n°1 :</label>
+                        <input placeholder="Tag n°1" type="text" name="tag1">
+                    </div>
+                    <div class="field">
+                        <label>Tag n°2 :</label>
+                        <input placeholder="Tag n°2" type="text" name="tag2">
+                    </div>
+                    <div class="field">
+                        <label>Tag n°3 :</label>
+                        <input placeholder="Tag n°3" type="text" name="tag3">
+                    </div>
+                </div>
+            </div>
+            * Champ obligatoire
+            <br>
+            <button class="ui orange button" type="submit" value="submit">Valider</button>
+        </form>
+    </div>
+
+{% endblock %}
+{% block js %}
+    $('input[type=file]').change(function(){
+        $in=$(this);
+        $('#location_pathfile').html('Fichier sélectionné : '+$in.val());
+    });
+{% endblock %}

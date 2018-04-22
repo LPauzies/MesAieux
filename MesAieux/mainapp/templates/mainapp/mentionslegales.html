@@ -1,0 +1,95 @@
+{% extends 'header.html' %}
+
+{% block stylesheet %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/mentionslegales.css' %}" />
+{% endblock %}
+
+{% load static %}
+
+{% block title %}
+Mentions légales
+{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        <h2 class="ui horizontal divider header">
+            Mentions Légales
+        </h2>
+        <h3 class="ui horizontal divider header">Développeurs</h3>
+        <p>
+            Ce site web est mis à disposition par quatre élèves ingénieurs de l'EISTI, en spécialité informatique.
+            Ce site est le résultat d'un projet abouti et réfléchi, dans le cadre du programme de première année de cycle ingénieur à l'EISTI. Il a été mené à bien par :
+        </p>
+        <div class="ui relaxed horizontal list">
+            <div class="item">
+                <img class="ui avatar image" src="{% static 'mainapp/img/profil/default.png' %}">
+                <div class="content">
+                    <span class="header">Antoine Bourgeois</span>
+                </div>
+            </div>
+            <div class="item">
+                <img class="ui avatar image" src="{% static 'mainapp/img/profil/default.png' %}">
+                <div class="content">
+                    <span class="header">Romain Cayuela</span>
+                </div>
+            </div>
+            <div class="item">
+                <img class="ui avatar image" src="{% static 'mainapp/img/profil/default.png' %}">
+                <div class="content">
+                    <span class="header">Lucas Pauzies</span>
+                </div>
+            </div>
+            <div class="item">
+                <img class="ui avatar image" src="{% static 'mainapp/img/profil/default.png' %}">
+                <div class="content">
+                    <span class="header">Laurine Sorel</span>
+                </div>
+            </div>
+        </div>
+        <p>
+            Ce site est la propriété des étudiants ci-dessus, et a été développé dans le cadre des cours délivrés par l’EISTI
+            (Ecole Internationale des Sciences du Traitement de l’Information),
+            école d’Ingénieurs en mathématiques et en informatique fondée en 1983.
+            Association à but non lucratif, l'EISTI est un établissement d'enseignement supérieur technique
+            privé associatif, reconnu par l'État et habilité par la Commission des Titres d'Ingénieur
+            (CTI) à délivrer le diplôme d'Ingénieur.<br><br>
+            EISTI - Avenue du Parc 95011 Cergy Pontoise Cedex <br><br>
+            EISTI - 2 Boulevard Lucien Favre 64075 Pau Cedex
+        </p>
+        <h3 class="ui horizontal divider header">Présentation</h3>
+        <p>
+            Ce site présente une application web en mesure d'enregistrer, de gérer et de relier des comptes
+            utilisateurs afin de créer et d'explorer les arbres généalogiques de chacun.
+            Ce site offre une interface permettant à l'utilisateur d'interagir avec les membres de sa famille.
+            Il pourra également modifier ses données à volonté, consulter des archives (attestées comme telle par des historiens)
+            ainsi que faire des recherches sur des personnes ou sur des familles répertoriées.
+        </p>
+        <h3 class="ui horizontal divider header">Informatique et Liberté</h3>
+        <p>
+            L’EISTI respecte les obligations légales relatives à la mise en œuvre du traitement automatisé des données à caractère personnel auprès de la Commission Nationale de l'Informatique et des Libertés.
+            L’utilisateur trouvera des informations sur ses droits et ses devoirs via le site de la Commission Nationale de l'Informatique et des Libertés : www.cnil.fr.
+            L’utilisateur est notamment informé que, conformément aux articles 38, 39 et 40 de la loi n° 78-17 du 6 janvier 1978, relative à l’informatique, aux fichiers et aux libertés, il bénéficie d’un droit individuel d’accès, de rectification et de suppression des informations personnelles le concernant.
+        </p>
+        <h3 class="ui horizontal divider header">Responsabilité</h3>
+        <p>
+            L’EISTI veille à la qualité des informations diffusées sur son site mais n’en garantit pas
+            l'exactitude et ne saurait être tenue responsable d'éventuelles erreurs ou omissions.
+            L'utilisateur est seul responsable de l'utilisation qu'il fait des informations accessibles,
+            la responsabilité de l’EISTI ne pouvant en aucun cas être recherchée à ce titre.
+            L’EISTI se réserve le droit de modifier à tout moment le contenu du présent site,
+            notamment à des fins d'actualisation.
+        </p>
+        <h3 class="ui horizontal divider header">Propriété Intellectuelle</h3>
+        <p>
+            Les œuvres/marques et ou logos  figurant sur ce site sont la propriété de l’EISTI ou des tiers lui ayant permis d’en faire usage.
+            Toute utilisation et/ou reproduction par un tiers doit faire l'objet d'une autorisation expresse préalable.
+            Les éléments figurant sur ce site peuvent être consultés librement et reproduits sur un support papier ou numérique sous réserve qu’ils soient strictement réservés à un usage soit personnel, soit pédagogique, gratuit et dans le respect de leur intégrité et de la mention de leur source (site web de l’EISTI).
+        </p>
+        <h3 class="ui horizontal divider header">Remerciements</h3>
+        <p>
+          Nous remercions l'EISTI et Mr Sébastien Rufiange d'avoir accompagné le développement du site en qualité de projet "Génie Logiciel" du premier semestre.
+        </p>
+    </div>
+    <br><br><br><br><br><br>
+{% endblock %}

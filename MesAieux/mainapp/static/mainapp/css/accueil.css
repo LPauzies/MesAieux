@@ -1,0 +1,36 @@
+body {
+   background-image:url(/static/mainapp/img/background_old.jpg);
+   background-position:50% 0%;
+   background-repeat: no-repeat;
+   background-size: cover;
+}
+
+.stackable.grid{
+    margin-top: 15%;
+}
+
+.ui.three.column.very.relaxed.grid{
+    position: relative;
+}
+
+.presentation{
+    background-color:white;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.titre-presentation{
+    text-align: center;
+}
+
+.titre-presentation.margin-bottom{
+    margin-bottom: 15px;
+}
+
+.accueilform {
+  display:inline-block;
+  width:100%;
+}
+
+.ui.text.container {
+  margin: auto;
+}

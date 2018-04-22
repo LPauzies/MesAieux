@@ -1,0 +1,95 @@
+{% extends 'header.html' %}
+
+{% block stylesheet %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/accueil.css' %}" />
+{% endblock %}
+
+{% block title %}
+Accueil
+{% endblock %}
+
+{% block content %}
+    <body>
+        <div class="ui vertical center aligned segment accueilform">
+            <div class="ui text container">
+                <div class="ui dividing header entete" data-position="right center" style="margin-top:3%;background-color:white;background: rgba(255, 255, 255, 0.7);padding:10px;">
+                    Rechercher une famille
+                </div>
+                <div class="content">
+                    <form method="post" class="ui form" action="{% url 'famille' %}">
+                        <div class="field">
+                            <div class="ui search" id="recherche">
+                                <div class="ui icon input">
+                                    <input class="prompt" name="nomFamilleRecherche" placeholder="Rechercher une famille..." type="text">
+                                    <i class="search icon"></i>
+                                </div>
+                                <div class="results"></div>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="ui orange right labeled icon button" type="submit" id="validRejoindre">
+                                Valider
+                                <i class="checkmark icon"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui container marge">
+            <div class="stackable grid">
+                <div class="ui three column very relaxed grid">
+                    <div class="column presentation">
+                        <p>
+                        <h2 class="titre-presentation margin-bottom">Créez votre compte</h2>
+                        Créez votre compte puis rejoignez votre famille.
+                        Si elle n'est pas créée, vous en aurez la possibilité. Vous deviendrez ainsi son administrer.
+                        Modifiez votre profil, et personnalisez votre compte pour le rendre unique.
+                        </p>
+                    </div>
+                    <div class="ui vertical divider">
+                        <i class="long arrow right icon"></i>
+                    </div>
+                    <div class="column presentation">
+                        <p>
+                        <h2 class="titre-presentation">Recherchez votre famille</h2>
+                        Recherchez une famille, un individu ou même encore des archives déposées par les utilisateurs et validées par les historiens.
+                        Echangez avec les autres membres via un système de messagerie simplifié et ergonomique.
+                        </p>
+                    </div>
+                    <div class="ui vertical divider">
+                        <i class="long arrow right icon"></i>
+                    </div>
+                    <div class="column presentation">
+                        <p>
+                        <h2 class="titre-presentation">Explorez votre généalogie</h2>
+                        Explorez votre généalogie via notre générateur d'arbre. Découvrez ou redécouvrez les membres de votre famille.
+                        Accédez à toutes les générations en un clic !
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+{% endblock %}
+
+
+{% block js %}
+    var contentRecherche = [
+        {% for famille in request.famille %}
+            {
+                image: 'media/{{famille.photo}}',
+                title: '{{famille}} #{{famille.id}}',
+            },
+        {% endfor %}
+    ]
+
+    $('.ui.search')
+        .search({
+            source: contentRecherche,
+            maxResults: 7,
+        })
+    ;
+{% endblock %}

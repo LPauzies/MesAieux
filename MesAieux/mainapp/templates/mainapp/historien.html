@@ -1,0 +1,138 @@
+{% extends 'header.html' %}
+
+{% block stylesheet %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/historien.css' %}" />
+{% endblock %}
+
+{% block title %}
+    Compte historien
+{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        {% for document in documents %}
+            <div class="ui clearing segment">
+                <div class="ui grid">
+                    <div class="eight wide column">
+                        <p>
+                            <b>Commentaire de l'utilisateur :</b>
+                            {{document.commentaire|linebreaks}}
+                        </p>
+                        {% if document.tag %}
+                            <div class="ui tag labels">
+                                {% for tag in document.split_tag %}
+                                    {% if tag %}
+                                        <a class="ui label">{{tag}}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif%}
+                        <div id="new_{{document.id}}"></div>
+                        {% if document.comHistorien %}
+                            <p class="old_{{document.id}}">
+                                <b>Commentaire Historien :</b>
+                                {{document.comHistorien}}
+                            </p>
+                        {% endif %}
+                        {% if document.dateHistorien %}
+                            <p class="old_{{document.id}}">
+                                <b>Date historien :</b>
+                                {{document.dateHistorien}}
+                            </p>
+                        {% endif %}
+                    </div>
+                    <div class="eight wide column">
+                        <div class="ui sixteen column centered grid ">
+                            <a  href="/media/{{document.fichier}}" target="_blank" class="visualisationDoc"><div class="ui center aligned orange button">Voir le document</div></a>
+                        </div>
+                        <div class="ui sixteen column centered grid">
+                            <div class="four column centered row">
+                                <div class="column">
+                                    <form action="{% url 'accepterDocument' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="id_document" value="{{document.id}}" />
+                                        <button class="ui basic button green" type="submit">
+                                            <i class="icon check" style="margin-left:auto;margin-right:auto;"></i>
+                                            Accepter
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="column">
+                                    <button class="ui basic button orange modifHistorien" type="submit" id="{{document.id}}">
+                                        <i class="icon edit" style="margin-left:auto;margin-right:auto;"></i>
+                                        Modifier
+                                    </button>
+                                </div>
+                                <div class="column">
+                                    <form action="{% url 'refuserDocument' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="id_document" value="{{document.id}}" />
+                                        <button class="ui basic button red" type="submit">
+                                            <i class="icon delete" style="margin-left:auto;margin-right:auto;"></i>
+                                            Refuser
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="ui modal" id="modalModif">
+            <i class="close icon"></i>
+            <div class="header">
+                Datez et annotez ce document
+            </div>
+            <div class="image content">
+                <div class="description">
+                    <form method="post" class="ui form">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{document.id}}" />
+                        <div class="field">
+                            <label>Annotation</label>
+                            <textarea name="annotation" id="annotation" rows="8" cols="40"></textarea>
+                        </div>
+                        <div class="field">
+                            <label>Date (jj/mm/yyyy)</label>
+                            <input type="date" name="date" id="date"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button">
+                    Annuler
+                </div>
+                <div class="ui positive right labeled icon button valid">
+                    Modifier
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    var id;
+    $('.modifHistorien').click(function(){
+        $('#modalModif').modal('show');
+        id = this.id;
+    });
+    $('.valid').click(function(){
+        $.ajax({
+            type: "POST",
+            url: "/modifierDocument/",
+            dataType: "json",
+            traditional: true,
+            data: {'id_document': JSON.stringify(id), 'annotation': JSON.stringify($('#annotation').val()), 'date': JSON.stringify($('#date').val())},
+            success: function(data) {
+                $("#new_"+id).html("<p><b>Commentaire historien : </b>"+data.annotation+"</p><p><b>Date historien : </b>"+data.date+"</p>");
+                $(".old_"+id).remove();
+            }
+        });
+    });
+
+{% endblock %}

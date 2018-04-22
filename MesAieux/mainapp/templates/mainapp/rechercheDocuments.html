@@ -1,0 +1,137 @@
+{% extends 'header.html' %}
+
+{% block title %}
+Rechercher un document
+{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        <form class="ui form attached fluid " action="{% url 'rechercheDocuments' %}" method="post">
+            {% csrf_token %}
+            <div class="three fields">
+                <div class="field">
+                    <label>Tag n°1 : </label>
+                    <input type="text" name="tag1" id="tag1" autofocus/>
+                </div>
+                <div class="field">
+                    <label>Tag n°2 : </label>
+                    <input type="text" name="tag2" id="tag2" />
+                </div>
+                <div class="field">
+                    <label>Tag n°3 :</label>
+                    <input type="text" name="tag3" id="tag3" />
+                </div>
+            </div>
+            <input type="submit" class="ui orange button" value="Rechercher" />
+        </form>
+
+        {% if rechercher %}
+            <div class="ui vertical segment"></div>
+            {% for recherche in rechercher.all %}
+                {% if recherche.validation %}
+                    <div class="ui clearing segment">
+                        <div class="ui header" id="user_{{recherche.individu.id}}">
+                            <p>
+                                <i>
+                                    {{recherche.individu.user.first_name}}
+                                    {{recherche.individu.user.last_name}}
+                                </i>
+                            </p>
+                            <div class="ui modal" id="modal_{{recherche.individu.id}}">
+                                <i class="close icon"></i>
+                                <div class="header">
+                                    {{recherche.individu.user.first_name}}
+                                    {{recherche.individu.user.last_name}}
+                                </div>
+                                <div class="image content">
+                                    <div class="ui medium image">
+                                        <img src="/media/{{recherche.individu.photo.name}}" class="ui circular centered image" width="200" height="200"/>
+                                    </div>
+                                    <div class="description">
+                                        <p>
+                                            Date de naissance : {{recherche.individu.date_nais}}
+                                        </p>
+                                        {% if recherche.individu.date_dece %}
+                                            <p>
+                                                Date de décès : {{recherche.individu.date_nais}}
+                                            </p>
+                                        {% endif %}
+                                        {% if recherche.individu.date_mariage %}
+                                            <p>
+                                                Date de mariage : {{recherche.individu.date_mariage}}
+                                            </p>
+                                        {% endif %}
+                                        <p>
+                                            Nationalité : {{recherche.individu.nationalite}}
+                                        </p>
+                                        {% if request.user.individu.famille == recherche.individu.famille or not 'mainapp.hidden_address' in recherche.individu.user.get_all_permissions%}
+                                            <p>
+                                                {{recherche.individu.user.coordonnee.numero}}
+                                                {{recherche.individu.user.coordonnee.nomrue}}
+                                                {{recherche.individu.user.coordonnee.ville}}
+                                                {{recherche.individu.user.coordonnee.code}}
+                                            </p>
+                                        {% endif %}
+                                        {% if request.user.individu.famille == recherche.individu.famille or not 'mainapp.hidden_telephone' in recherche.individu.user.get_all_permissions%}
+                                            <p>
+                                                {{recherche.individu.user.coordonnee.telephone}}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="actions">
+                                    <div class="ui right orange positive  button">
+                                        Ok
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui grid">
+                            <div class="fifteen wide column">
+                                <p>
+                                    <b>Commentaire :</b>
+                                    {{recherche.commentaire|linebreaks}}
+                                </p>
+                            </div>
+                            <div class="thirteen wide column">
+                                {% if recherche.tag %}
+                                    <div class="ui tag labels">
+                                        {% for tag in recherche.split_tag %}
+                                            <span class="ui label">{{tag}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif%}
+                                {% if recherche.comHistorien %}
+                                    <p>
+                                        <b>Commentaire historien :</b>
+                                        {{recherche.comHistorien}}
+                                    </p>
+                                {% endif %}
+                                {% if recherche.dateHistorien %}
+                                    <p>
+                                        <b>Date :</b>
+                                        {{recherche.dateHistorien}}
+                                    </p>
+                                {% endif %}
+                            </div>
+                            <div class="three wide column">
+                                <a  href="/media/{{recherche.fichier}}" target="_blank"><div class="ui right floated orange button">Voir le document</div></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="ui vertical segment"></div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block js %}
+    $('.ui.header').css('cursor','pointer');
+    $(".ui.header").click(function(){
+        var id = this.id
+        id = id.split('_')[1]
+        $("#modal_"+id).modal('show');
+    });
+{% endblock %}
+

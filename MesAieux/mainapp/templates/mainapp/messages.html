@@ -1,0 +1,92 @@
+{% extends 'header.html' %}
+
+{% block title %}
+    Mes messages
+{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        <div class="content active scroll">
+            <div class="ui comments">
+                {% for message in list_messages %}
+                    <div class="ui right aligned grid" id="div_{{message.id}}">
+                       <div class="ui comment right floated right aligned fifteen wide column">
+                            <a class="avatar">
+                                <img src="/media/{{ message.user1.photo }}">
+                            </a>
+                            <div class="content">
+                                <a class="author">{{ message.user1.user.first_name}} {{ message.user1.user.last_name }} à {{ message.user2.user.first_name }} {{ message.user2.user.last_name }}</a>
+                                <div class="metadata">
+                                    <span class="date">{{ message.date }}</span>
+                                </div>
+                                <div class="text" >
+                                    {{ message.message|linebreaks }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="left floated left aligned one wide column">
+                            <i class="trash red icon" id="{{message.id}}"></i>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <form class="ui reply form" action="{% url 'message' %}" method="post">
+            {% csrf_token %}
+            <div class="ui search field" id="all_user">
+                <div class="ui icon input">
+                    <input class="prompt" name="destinataire" placeholder="Rechercher un utilisateur..." type="text">
+                    <i class="search icon"></i>
+                </div>
+                <div class="results"></div>
+            </div>
+            <div class="field">
+                <textarea name="message"></textarea>
+            </div>
+
+                <button class="ui orange right labeled icon button field" type="submit" id="validRejoindre">
+                    Envoyer un message
+                    <i class="checkmark icon"></i>
+                </button>
+        </form>
+        <br>
+    </div>
+
+{% endblock%}
+
+{% block js %}
+    $('.accordion').accordion({
+        selector: {
+            trigger: '.title .icon'
+        }
+    });
+
+    var listIndividu = [
+        {% for individu in all_user %}
+        {
+            title: '{{individu.user.first_name}} {{individu.user.last_name}} <span class="id_famille_individu">#{{individu.id}}</span>',
+        },
+        {% endfor %}
+    ];
+
+    $('#all_user').search({
+        source: listIndividu
+    });
+
+    $('.trash').css('cursor','pointer');
+
+    $('.trash').click(function(){
+        $.ajax({
+            type: "POST",
+            url: "/supprimermessage/",
+            dataType: "json",
+            traditional: true,
+            data: {"message": JSON.stringify(this.id)},
+            success: function(data) {
+                $("#div_"+data.message).remove();
+            }
+        });
+    });
+
+{% endblock %}

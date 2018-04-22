@@ -1,0 +1,25 @@
+.margin-bottom{
+    margin-bottom:10px;
+}
+
+.user-name{
+    text-align:center;
+    font-size:16pt;
+    font-weight:bold;
+}
+
+.input-img{
+    display:none;
+}
+
+.occupation{
+    margin-top:10px;
+}
+
+.hidden{
+    text-align:center;
+}
+
+div.ui.buttons{
+    margin-left:36.5%;
+}

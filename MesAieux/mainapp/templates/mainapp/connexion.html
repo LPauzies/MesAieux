@@ -1,0 +1,39 @@
+{% extends 'header.html' %}
+
+{% block stylesheet %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/connexion_inscription.css' %}" />
+{% endblock %}
+
+{% block title %} Connexion {% endblock %}
+
+{% block content %}
+    <body>
+        <div class="ui container">
+            <div class="ui two column centered grid">
+                <div class="eight wide column">
+                    <div class="ui attached message">
+                        <div class="header">
+                            Bienvenue sur <i>Mes Aïeux</i> !
+                        </div>
+                        <p>Remplissez les champs ci-dessous afin de vous connecter.</p>
+                    </div>
+                    <form class="ui form attached fluid segment" action="{% url 'connexion' %}" method="post">
+                        {% csrf_token %}
+                        <!-- Mise en page des champs du formulaire de connexion -->
+                        {{ form }}
+                        <br />
+                        <br />
+                        <div class="button-connexion">
+                            <button class="ui orange button button-connexion" type="submit">Se connecter</button>
+                        </div>
+                    </form>
+                    <div class="ui bottom attached message">
+                        <i class="icon help"></i>
+                        Pas encore inscrit ? <a href="{% url 'inscription' %}">Inscrivez-vous ici</a>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+{% endblock %}

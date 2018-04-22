@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/semantic.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/custom.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/header.css' %}" />
+    {% block stylesheet %}{% endblock %}
+    <title>{% block title %} {% endblock %}</title>
+</head>
+
+<body>
+    <div class="ui menu pointing">
+        <a class="item" href="{% url 'accueil' %}">
+            Accueil
+        </a>
+        <a class="item" href="{% url 'recherche' %}">
+            Recherche
+        </a>
+        {% if request.user.is_authenticated %}
+            <a class="item" href="{% url 'message' %}">
+                Mes Messages
+            </a>
+            <div class="ui dropdown item" id="Documents">
+                Documents
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a class="item" href="{% url 'ajoutdocuments' %}">
+                        <i class="add icon"></i>
+                        Ajouter un document
+                    </a>
+                    <a class="item" href="{% url 'documents' %}">
+                        <i class="file icon"></i>
+                        Visualiser mes documents
+                    </a>
+                    <a class="item" href="{% url 'rechercheDocuments' %}">
+                        <i class="search icon"></i>
+                        Rechercher un document
+                    </a>
+                </div>
+            </div>
+            {% if request.user.individu.famille %}
+                <a class="item" href="{% url 'famille' %}">
+                    Ma famille
+                </a>
+            {% endif %}
+            {% if 'mainapp.historien' in request.user.get_all_permissions %} <!-- Si user est historien -->
+                <a class="item" href="{% url 'historien' %}">
+                    Historien
+                </a>
+            {% endif %}
+        {% endif %}
+
+
+        <div class="right menu">
+            {% if not request.user.is_authenticated %} <!-- Si user pas authentifié -->
+            <div class="item">
+                <a class="ui orange button" href="{% url 'inscription' %}">
+                    Inscription
+                </a>
+            </div>
+            <div class="item">
+                <a class="ui button" href="{% url 'connexion' %}">
+                    Connexion
+                </a>
+            </div>
+            {% else %} <!-- Sinon user authentifié -->
+            <div class="ui right dropdown item" id="User">
+                {{request.user.first_name}} {{request.user.last_name}}
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a class="item" href="{% url 'logout' %}">
+                        <i class="sign in icon"></i>
+                        Déconnexion
+                    </a>
+                    <a class="item" href="{% url 'moncompte' %}">
+                        <i class="edit icon"></i>
+                        Éditer mon profil
+                    </a>
+                    <!-- Bouton de modif du mot de passe -->
+                    <div class="ui modal" id="identifiants">
+                        <div class="header">
+                            Modification de mon mot de passe
+                        </div>
+                        <div class="content">
+                            <div class="description">
+                                <p class="modif-password"> Pour modifier votre mot de passe, saisissez une première fois l'ancien mot de passe puis deux fois le nouveau. </p>
+                                <form method="post" class="ui form" id="pwd_form">
+                                    <div class="three fields">
+                                        <div class="field">
+                                            <label>Ancien mot de passe</label>
+                                            <input type="password" name="old_password" id="old_password" required/>
+                                        </div>
+                                        <div class="field">
+                                            <label>Nouveau mot de passe (minimum : 8 caractères)</label>
+                                            <input type="password" name="new_password" id="new_password" required/>
+                                        </div>
+                                        <div class="field">
+                                            <label>Confirmer nouveau mot de passe</label>
+                                            <input type="password" name="con_password" id="con_password" required/>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <div class="ui black deny button">
+                                Annuler
+                            </div>
+                            <div class="ui orange right labeled icon button" id="modifier_pwd">
+                                Modifier mon mot de passe
+                                <i class="checkmark icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="item" id="modifID">
+                        <i class="lock icon"></i>
+                        Modifier mon mot de passe
+                    </a>
+                    <!-- Fin du bouton de modif mot de passe -->
+                    <div class="divider"></div>
+                    {% if 'mainapp.admin_famille' in request.user.get_all_permissions %} <!-- Si user est l'admin de la famille -->
+                        <div class="header">Famille : {{request.user.individu.famille}}</div>
+                        <a class="item" href="{% url 'editfamille' %}">
+                            <i class="users icon"></i>
+                            Éditer la famille
+                        </a>
+                    {% elif request.user.individu.famille is None%} <!-- Si user n'est pas dans une famille -->
+                        <div class="ui modal" id="creer">
+                            <i class="close icon"></i>
+                            <div class="header">
+                                Création d'une famille
+                            </div>
+                            <div class="content">
+                                <div class="description">
+                                    <p>En créant une famille vous en deviendrez automatiquement l'administrateur.</p>
+                                    <p>Veuillez choisir un nom pour votre famille : </p>
+                                    <form method="post" class="ui form">
+                                        <div class="field">
+                                            <input type="text" id="nomfamille"/>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <div class="ui black deny button">
+                                    Annuler
+                                </div>
+                                <div class="ui orange right labeled icon button" id="valid">
+                                    Créer
+                                    <i class="checkmark icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui modal" id="rejoindre">
+                            <i class="close icon"></i>
+                            <div class="header">
+                                Rejoindre une famille
+                            </div>
+                            <div class="content">
+                                <div class="description">
+                                    <p>Vous pouvez rejoindre une famille déjà existante.</p>
+                                    <p>Veuillez rentrer le nom de la famille que vous souhaitez rejoindre : </p>
+                                    <form method="post"  class="ui form"  id="validRejoindre">
+                                        {% csrf_token %}
+                                        <div class="field">
+                                            <div class="ui search" id="rejoindre">
+                                                <div class="ui icon input">
+                                                    <input class="prompt" id="nomFamilleRejoindre" placeholder="Rechercher une famille..." type="text">
+                                                    <i class="search icon"></i>
+                                                </div>
+                                                <div class="results"></div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <div class="ui black deny button">
+                                    Annuler
+                                </div>
+                                <div class="ui orange right labeled icon button">
+                                    Rejoindre
+                                    <i class="checkmark icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header" id="title">Famille</div>
+                        <a class="item" id="create">
+                            <i class="plus icon"></i>
+                            Créer une famille
+                        </a>
+                        <a class="item" id="create2">
+                            <i class="add user icon"></i>
+                            Rejoindre une famille
+                        </a>
+                    {% elif 'mainapp.confirmation' in request.user.get_all_permissions %}
+                        <div class="item">
+                            En attente...
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+        <div class="ui container" id="header">
+            {% if messages %}
+                {% for message in messages%}
+                    <div class="ui
+                        {% if message.tags == 'success' %}
+                            positive
+                        {% elif message.tags == 'error' %}
+                            negative
+                        {% endif %}
+                    message transition">
+                        <i class="close icon"></i>
+                        <div class="header">
+                            {{message}}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+     <main>
+      <!-- Emplacement publicité -->
+
+      <div id="advertbanner">
+        <img class="banner" src="" name="adbanner"/>
+      </div>
+
+      <div class="ui grid three column">
+
+        <div class="row">
+            <div id="advertskyleft" class="ui left floated column">
+              <img class="banner" src="" name="adskyscraper1"/>
+            </div>
+
+            <div class="ui centered">
+              {% block content %}
+              {% endblock %}
+            </div>
+
+            <div id="advertskyright" class="ui right floated column">
+              <img class="banner" src="" name="adskyscraper2"/>
+            </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="page-footer" id="footer">
+        <div class="ui horizontal list footer_list">
+            <div class="item">
+                <div class="content">
+                    <a href="{% url 'contact' %}" class="link">Nous contacter</a>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="content">
+                    <a href="{% url 'mentionslegales' %}" class="link">Mentions Légales</a>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="content">
+                    <a href="https://eisti.fr/" class="link">Ecole Internationale des Sciences et du Traitement des Informations</a>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="content footer-link">
+                    <a href="https://www.facebook.com/myEISTI" class="link"><i class="big facebook square icon inverted"></i></a>
+                    <a href="https://www.youtube.com/eistitv" class="link"><i class="big youtube play icon inverted"></i></a>
+                    <a href="https://twitter.com/myeisti" class="link"><i class="big twitter icon inverted"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="{% static 'mainapp/js/semantic.min.js' %}"></script>
+<script type="text/javascript" charset="utf-8">
+
+    setTimeout(function() {$('#header').remove();}, 7000);
+    //Fonction qui permet d'enlever le message automatiquement après 7 secondes
+
+    $(window).bind("load", function() {
+
+         var footerHeight = 0,
+             footerTop = 0,
+             $footer = $("#footer");
+
+         positionFooter();
+
+         function positionFooter() {
+
+                  footerHeight = $footer.height();
+                  footerTop = ($(window).scrollTop()+$(window).height()-footerHeight-26)+"px";
+
+                 if ( ($(document.body).height()+footerHeight) < $(window).height()) {
+                     $footer.css({
+                          position: "absolute"
+
+                     }).css({
+                          top: footerTop
+                     })
+                 } else {
+                     $footer.css({
+                          position: "static"
+                     })
+                 }
+
+         }
+
+         $(window).resize(positionFooter)
+                 //N'est fait que lors du resize de la fenêtre (ie après un event JQuery par exemple)
+
+    });
+
+
+    $('.message .close').on('click', function() {
+        $(this)
+            .closest('.message')
+            .transition('fade')
+            ;
+    });
+
+    $(document).ready(function (){
+        $('#User').dropdown();
+        $('#Documents').dropdown();
+
+        $('.big').mouseout(function(){
+            $(this).removeClass("black");
+        })
+
+        $('.big').mouseover(function(){
+            $(this).addClass("black");
+            $(this).transition('jiggle');
+        })
+
+        $("#create").click(function(){
+            $('#creer').modal('show');
+        })
+
+        $('#valid').click(function(){
+            $.ajax({
+                type: "POST",
+                url: "/creerfamille/",
+                dataType: "json",
+                traditional: true,
+                data: {'nom_famille': JSON.stringify($('#nomfamille').val())},
+                success: function(data) {
+                    location.reload();
+                }
+            });
+        });
+
+        var contentrejoindre = [
+            {% for famille in request.famille %}
+            {
+                title: '{{famille}}',
+                image: '/media/{{famille.photo}}',
+
+            },
+            {% endfor %}
+        ]
+
+        $('#rejoindre').search({
+             source: contentrejoindre
+         });
+
+        $("#create2").click(function(){
+            $('#rejoindre').modal('show');
+        })
+
+        $('#validRejoindre').submit(function(){
+            $.ajax({
+                type: "POST",
+                url: "/rejoindreFamille/",
+                dataType: "json",
+                traditional: true,
+                data: {'nom_famille_rejoindre': JSON.stringify($('#nomFamilleRejoindre').val())},
+                success: function(data) {
+                    location.reload();
+                }
+            });
+        });
+
+        $("#modifID").click(function(){
+            $('#identifiants').modal('show');
+        })
+
+        $('#modifier_pwd').click(function(){
+            $.ajax({
+                type: "POST", //type de requete
+                url: "/getpwd/",
+                dataType: "json",
+                traditional: true,
+                data: {'old_password': JSON.stringify($('#old_password').val()), 'new_password': JSON.stringify($('#new_password').val()), 'con_password': JSON.stringify($('#con_password').val())},
+                success: function(data) {
+                    location.reload();
+                }
+            });
+        });
+    });
+
+    /* Module de publicité */
+    //Module des bannières
+    var bannerArray = new Array(); //On crée un tableau de bannières
+    var delay = 8; //En secondes
+    var nBanPos = Math.floor((Math.random() * 9)); //Indice de parcours du tableau random au début
+    var oTimer; //Timer dans lequel on stocke la durée avant le prochain appel de fonction
+    var debut_pathBanner = "/static/mainapp/img/publicite/banners/";
+    var extension = ".png";
+    //Tendance masculine pair
+    bannerArray[0] = "Ubisoft";
+    bannerArray[2] = "JetBrains";
+    bannerArray[4] = "Avast";
+    bannerArray[6] = "Capgemini";
+    bannerArray[8] = "Twitch";
+    //Tendance féminine impair
+    bannerArray[1] = "Loreal";
+    bannerArray[3] = "Amazon";
+    bannerArray[5] = "Decathlon";
+    bannerArray[7] = "Kering";
+    bannerArray[9] = "myheritage";
+
+    var nBanMax = bannerArray.length; //Longueur du tableau
+
+    function bannerRotation(){
+
+      var myBanner = document.images["adbanner"];
+
+      if (document.all){ //Si tous les éléments sont en place.
+        myBanner.style.filter="blendTrans(duration=2)";
+        myBanner.style.filter="blendTrans(duration=CrossFadeDuration)";
+        myBanner.filters.blendTrans.Apply();
+      }
+      myBanner.src= debut_pathBanner + bannerArray[nBanPos] + extension;
+      if (document.all) myBanner.filters.blendTrans.Play();
+        oTimer = setTimeout("bannerRotation()",delay*950);
+
+      if (nBanPos<nBanMax-1) {
+        nBanPos = nBanPos + 1;
+      } else {
+        nBanPos = 0;
+      }
+
+    }
+
+    bannerRotation();
+
+    //Module des skyscrapers
+
+    var skyscrapersArray = new Array(); //On crée un tableau de bannières
+    var nSkyPos1 = Math.floor((Math.random() * 7)); //Indice de parcours du tableau random au début pour le sky 1
+    var nSkyPos2 = Math.floor((Math.random() * 7)); //Indice de parcours du tableau random au début pour le sky 2
+    while (nSkyPos1 == nSkyPos2) {
+      nSkyPos1 = Math.floor((Math.random() * 7));
+      nSkyPos2 = Math.floor((Math.random() * 7));
+    }
+    var delay2 = delay - 2;
+    var oTimerSky; //Timer dans lequel on stocke la durée avant le prochain appel de fonction
+    var debut_pathSkyscrapers = "/static/mainapp/img/publicite/skyscrapers/";
+    //Tendance masculine pair
+    skyscrapersArray[0] = "Airbus";
+    skyscrapersArray[2] = "Coca";
+    skyscrapersArray[4] = "Eisti";
+    skyscrapersArray[6] = "mozilla";
+    //Tendance féminine impair
+    skyscrapersArray[1] = "Chanel";
+    skyscrapersArray[3] = "FNAC";
+    skyscrapersArray[5] = "Sephora";
+
+    var nSkyMax = skyscrapersArray.length; //Longueur du tableau
+
+    function skyscraperRotation(){
+
+      var mySky1 = document.images['adskyscraper1'];
+      var mySky2 = document.images['adskyscraper2'];
+
+      if (document.all){ //Si tous les éléments sont en place.
+        mySky1.style.filter="blendTrans(duration=2)";
+        mySky1.style.filter="blendTrans(duration=CrossFadeDuration)";
+        mySky1.filters.blendTrans.Apply();
+        mySky2.style.filter="blendTrans(duration=2)";
+        mySky2.style.filter="blendTrans(duration=CrossFadeDuration)";
+        mySky2.filters.blendTrans.Apply();
+      }
+      mySky1.src= debut_pathSkyscrapers + skyscrapersArray[nSkyPos1] + extension;
+      mySky2.src= debut_pathSkyscrapers + skyscrapersArray[nSkyPos2] + extension;
+      if (document.all) myBanner.filters.blendTrans.Play();
+        oTimerSky = setTimeout("skyscraperRotation()",delay2*1000);
+
+      //Indice Sky 1
+      if (nSkyPos1<nSkyMax-1) {
+        nSkyPos1 = nSkyPos1 + 1;
+      } else {
+        nSkyPos1 = 0;
+      }
+
+      //Indice Sky 2
+      if (nSkyPos2<nSkyMax-1) {
+        nSkyPos2 = nSkyPos2 + 1;
+      } else {
+        nSkyPos2 = 0;
+      }
+
+    }
+
+    skyscraperRotation();
+    /*Fin du module de publicité */
+
+{% block js %}{% endblock %}
+</script>
+</html>

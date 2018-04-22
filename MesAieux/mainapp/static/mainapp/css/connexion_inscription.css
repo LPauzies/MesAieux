@@ -1,0 +1,16 @@
+body{
+    background-image:url(/static/mainapp/img/background_old.jpg);
+    background-position:50% 50%;
+}
+
+.ui.two.column.centered.grid{
+    margin-top: 10%;
+}
+
+div.button-connexion{
+    text-align: center;
+}
+
+button.button-connexion{
+    display: inline-block;
+}

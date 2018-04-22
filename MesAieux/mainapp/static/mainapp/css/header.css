@@ -1,0 +1,73 @@
+div.ui.menu.pointing{
+    height:50px;
+}
+
+.modif-password{
+    margin-bottom:10px;
+}
+
+.footer-link{
+    margin-top: 5px;
+}
+
+svg {
+    font: 10px sans-serif;
+  }
+  .linage {
+    fill: none;
+    stroke: #000;
+  }
+  .marriage {
+    fill: none;
+    stroke: black;
+  }
+  .man {
+    background-color: lightblue;
+    border-style: solid;
+    border-width: 1px;
+  }
+  .woman {
+    background-color: pink;
+    border-style: solid;
+    border-width: 1px;
+  }
+  .emphasis{
+    font-style: italic;
+  }
+  p {
+    padding:0;
+    margin:0;
+  }
+
+
+
+  #graph{
+    border:2px solid black;
+  }
+
+  #advertbanner {
+    margin: auto;
+    width: 728px;
+    height: 90px;
+    background-color: none;
+    color: white;
+    margin-bottom: 20px;
+  }
+
+  #advertskyleft {
+    width: 160px;
+    height: 600px;
+    background-color: none;
+    margin-left: 1%;
+  }
+
+  #advertskyright {
+    width: 160px;
+    height: 600px;
+    background-color: none;
+    margin-right: 1%;
+  }
+
+  .banner {
+    border: 1px solid black;
+  }

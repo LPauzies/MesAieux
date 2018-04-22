@@ -1,0 +1,255 @@
+{% extends 'header.html' %}
+{% load static %}
+
+{% block title %}
+Administrer sa famille
+{% endblock %}
+
+{% block content %}
+<div class="ui container">
+    <br>
+        <h2 class="ui horizontal divider header">
+            <div class="ui" id="nom" data-tooltip="Modifier le nom de la famille" data-position="right center">
+            {{request.user.individu.famille}}
+        </div>
+    </h2>
+    <input type="hidden" id="familleid" value="{{request.user.individu.famille_id}}" />
+    <div class="ui modal" id="update">
+        <i class="close icon"></i>
+        <div class="header">
+            Modification du nom de ma famille
+        </div>
+        <div class="content">
+            <div class="description">
+                <p>Veuillez choisir un nouveau nom pour votre famille : </p>
+                <form method="post" class="ui form">
+                    <div class="field">
+                        <input type="text" id="nomupdate" value="{{request.user.individu.famille}}"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button">
+                Annuler
+            </div>
+            <div class="ui orange right labeled icon button" id="validupdate">
+                Modifier
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+    <img id="imagefamille" src="/media/{{photo.name}}" class="ui circular centered image" alt="famille_{{request.user.individu.famille}}" width="200" height="200"/>
+    <div class="ui basic modal">
+        <div class="image content">
+            <div class="description">
+                <img src="/media/{{photo.name}}" class="ui fluid centered image" alt="famille_{{request.user.individu.famille}}"/>
+            </div>
+        </div>
+    </div>
+    <div class="ui center aligned container">
+        <form id="fileFamille" action="{% url 'famillepic' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="button" class="ui orange button" id="load_image" value="Changer mon avatar" onclick="document.getElementById('id_image').click();" />
+            <input type="file" name="photo" id="id_image" style="display:none;"/>
+            <button class="ui orange button" type="submit" value="submit">Valider</button>
+            <p class="black file_location" id="location_pathfile"></p>
+            <p class="grey file_size">La taille maximale allouée est de 2.5 MB</p>
+        </form>
+    </div>
+
+        <div class="ui secondary pointing menu">
+            <a class="active item orange" id="familly">
+                Membres de ma famille
+            </a>
+            <a class="item orange" id="notinfamilly">
+                Demande d'ajout à ma famille
+            </a>
+        </div>
+        {% for user in users %}
+            {% if user != request.user%}
+                <div class="ui segment{% if not 'mainapp.confirmation' in user.get_all_permissions%} user_in_familly {% else %} user_not_familly {% endif %}">
+                    <h4 class="ui header">
+                        <div class="ui left floated">
+                            {% if not 'mainapp.confirmation' in user.get_all_permissions %}
+                                {% if 'mainapp.admin_famille' in user.get_all_permissions %}
+                                    <div class="ui star rating orange" id="{{user.id}}" data-rating="1" data-max-rating="1" data-tooltip="Modifier les droits d'administration" data-position="bottom left"></div>
+                                {% else %}
+                                    <div class="ui star rating" id="{{user.id}}" data-rating="0" data-max-rating="1" data-tooltip="Modifier les droits d'administration" data-position="bottom left"></div>
+                                {% endif %}
+                        {% endif %}
+                        <span>{{user.first_name}} {{user.last_name}}</span>
+                        <i class="edit icon" id="{{user.individu.id}}"></i>
+                    </div>
+                </h4>
+
+                <div class="ui clearing divider"></div>
+                    <h5 class="ui header">
+                        <div class="sub header">{{user.email}}</div>
+                        {% if user.last_login is not None %}
+                            <div class="sub header"><i>Dernière connexion :</i> {{user.last_login}}</div>
+                        {% endif %}
+                    </h5>
+                    <p>
+                        <i>
+                            {% if user.coordonnee.numero %}
+                                {{user.coordonnee.numero}}
+                            {% endif %}
+                            {% if user.coordonnee.nomrue %}
+                                {{user.coordonnee.nomrue}}
+                            {% endif %}
+                            {% if user.coordonnee.ville %}
+                                {{user.coordonnee.ville}}
+                            {% endif %}
+                            {% if user.coordonnee.code %}
+                                {{user.coordonnee.code}}
+                            {% endif %}
+                        </i>
+                    </p>
+                    <p>
+                        <i>Date de naissance : </i>{{user.individu.date_nais}}
+                        {% if user.individu.date_dece %}
+                            <i>Date de décès : </i>{{user.individu.date_dece}}
+                        {% endif %}
+                    </p>
+                    {% if 'mainapp.confirmation' in user.get_all_permissions %}
+                    <div class="ui form">
+                        <div class="sixteen fields">
+                            <div class="field">
+                                <form action="{% url 'accepterMembre' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id_user" value="{{user.id}}" />
+                                    <button class="ui basic button green accepter_membre" type="submit">
+                                        <i class="icon check"></i>
+                                        Accepter
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="field">
+                                <form action="{% url 'refuserMembre' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id_user" value="{{user.id}}" />
+                                    <button class="ui basic button red refuser_membres" type="submit">
+                                        <i class="icon delete"></i>
+                                        Refuser
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
+    <div class="ui modal" id="edit">
+        <i class="close icon"></i>
+        <div class="header">
+            Ajouter une date de décès
+        </div>
+        <div class="image content">
+            <div class="description">
+                <b>Date (jj/mm/yyyy) :</b>
+                <input type="date" id="date_deces" />
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button">
+                Nope
+            </div>
+            <div class="ui positive right labeled icon orange button" id="valide_date_deces">
+                Valider
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+    $('input[type=file]').change(function(){
+        $in=$(this);
+        $('#location_pathfile').html('Fichier sélectionné : '+$in.val());
+    });
+
+    $('.ui.rating').rating();
+
+    $("#nom").click(function(){
+        $('#update').modal('show');
+    })
+
+    $('.edit.icon').css('cursor','pointer');
+    var id_user_modif;
+    $('.edit.icon').click(function(){
+        $('#edit').modal('show');
+        id_user_modif = this.id;
+    });
+    $("#valide_date_deces").click(function(){
+        $.ajax({
+            type: "POST",
+            url: "/ajoutDateDeces/",
+            dataType: "json",
+            traditional: true,
+            data: {'id_individu': JSON.stringify(id_user_modif), 'date': JSON.stringify($('#date_deces').val())},
+            success: function(data) {
+                location.reload();
+            }
+        });
+    });
+
+    $('#nom').css('cursor','pointer');
+
+    $('#validupdate').click(function(){
+        $.ajax({
+            type: "POST",
+            url: "/updatefamille/",
+            dataType: "json",
+            traditional: true,
+            data: {'id_famille': JSON.stringify($('#familleid').val()), 'update_nom_famille': JSON.stringify($('#nomupdate').val())},
+            success: function(data) {
+                location.reload();
+            }
+        });
+    });
+
+    $('.ui.rating').click(function(){
+        $.ajax({
+            type: "POST",
+            url: "/editfamille/",
+            dataType: "json",
+            traditional: true,
+            data: {'username': JSON.stringify(this.id)},
+            success: function(data) {}
+        });
+    });
+
+    $('.user_not_familly').hide();
+    $('.ui.secondary.pointing.menu .item').click(
+        function() {
+            if (!$(this).hasClass('dropdown browse')) {
+                $(this)
+                .addClass('active')
+                .closest('.ui.menu')
+                .find('.item')
+                .not($(this))
+                .removeClass('active');
+            }
+            if ($(this).is('#familly')) {
+                $('.user_in_familly').show();
+                $('.user_not_familly').hide();
+            } else{
+                if ($(this).is('#notinfamilly')){
+                    $('.user_in_familly').hide();
+                    $('.user_not_familly').show();
+                }
+            }
+        }
+    );
+
+    $('#imagefamille').css('cursor','pointer');
+    $('#imagefamille').click(function(){
+        $('.ui.basic.modal')
+          .modal('show')
+          ;
+    });
+{% endblock %}
